@@ -1,0 +1,89 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markov Chain Generator</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f9f9f9;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      h1 {
+        color: #c62828;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      p {
+        font-size: 18px;
+        line-height: 1.6;
+        word-wrap: break-word;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #c62828;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-top: 20px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #a12020;
+      }
+      #spinner {
+        display: none;
+        margin-top: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Generated Markov Chain Text</h1>
+      <p id="generated-text">{{ generated_text }}</p>
+      <button id="regenerate-btn" class="btn">🔁 Regenerate</button>
+      <div id="spinner">⏳ Generating...</div>
+    </div>
+
+    <script>
+      const regenerateBtn = document.getElementById("regenerate-btn");
+      const spinner = document.getElementById("spinner");
+      const textEl = document.getElementById("generated-text");
+
+      regenerateBtn.addEventListener("click", () => {
+        spinner.style.display = "block";
+        regenerateBtn.disabled = true;
+
+        fetch("/generate")
+          .then((res) => res.json())
+          .then((data) => {
+            textEl.textContent = data.text;
+          })
+          .catch((err) => {
+            textEl.textContent = "❌ Error generating text.";
+            console.error(err);
+          })
+          .finally(() => {
+            spinner.style.display = "none";
+            regenerateBtn.disabled = false;
+          });
+      });
+    </script>
+  </body>
+</html>
